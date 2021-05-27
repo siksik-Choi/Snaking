@@ -32,7 +32,7 @@ public class GameFrame2 extends JFrame implements ActionListener{
   if(e.getSource()==bt_AnotherGame) {
 	  this.setVisible(false);
       this.dispose(); //해당프레임만종료
-      new LevelFrame(); //새게임
+      new GameFrame(); //새게임
   }
  }
 }
