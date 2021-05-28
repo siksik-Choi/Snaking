@@ -1,3 +1,5 @@
+package application;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -12,7 +14,6 @@ public class GameFrame extends JFrame{
 		this.pack();
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
-		
 		
 	}
 }

@@ -1,3 +1,5 @@
+package application;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -9,17 +11,20 @@ public class GamePanel extends JPanel implements ActionListener{
 	static final int SCREEN_HEIGHT = 750;
 	static final int UNIT_SIZE = 50;
 	static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/(UNIT_SIZE*UNIT_SIZE);
-	static final int DELAY = 100;
+	//static final int DELAY = 100;
 	final int x[] = new int[GAME_UNITS];
 	final int y[] = new int[GAME_UNITS];
 	int bodyParts = 6;
 	int applesEaten;
 	int appleX;
 	int appleY;
+	int itemType = 1;
 	char direction = 'R';
 	boolean running = false;
+	static int DELAY = 100;
 	Timer timer;
 	Random random;
+	
 	
 	GamePanel(){
 		random = new Random();
@@ -28,8 +33,8 @@ public class GamePanel extends JPanel implements ActionListener{
 		this.setFocusable(true);
 		this.addKeyListener(new MyKeyAdapter());
 		startGame();
-		
 	}
+	
 	public void startGame() {
 		newApple();
 		running = true;
@@ -49,10 +54,26 @@ public class GamePanel extends JPanel implements ActionListener{
 				g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
 			}
 			*/
-			g.setColor(Color.red);
-			g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+			
+			// 사과 그리기
+			if (itemType==0) 
+			{
+				g.setColor(Color.red);
+				g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+			}
+			else if (itemType==1)  // 스피드 업!
+			{
+				g.setColor(Color.blue);
+				g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+			}
+			else // 스피드 다운~
+			{
+				g.setColor(Color.pink);
+				g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+			}
 		
-			for(int i = 0; i< bodyParts;i++) {
+			// 뱀 그리기
+			for(int i = 0; i < bodyParts; i++) {
 				if(i == 0) {
 					g.setColor(Color.green);
 					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
@@ -63,6 +84,8 @@ public class GamePanel extends JPanel implements ActionListener{
 					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
 				}			
 			}
+			
+			// 스코어 나타내기
 			g.setColor(Color.red);
 			g.setFont( new Font("Ink Free",Font.BOLD, 40));
 			FontMetrics metrics = getFontMetrics(g.getFont());
@@ -76,6 +99,16 @@ public class GamePanel extends JPanel implements ActionListener{
 	public void newApple(){
 		appleX = random.nextInt((int)(SCREEN_WIDTH/UNIT_SIZE))*UNIT_SIZE;
 		appleY = random.nextInt((int)(SCREEN_HEIGHT/UNIT_SIZE))*UNIT_SIZE;
+		
+		// 뱀 아래에 사과가 생성되는 것을 막는다.
+		for (int i = 0; i < bodyParts; i++) 
+		{
+			if (appleX == x[i] && appleY == y[i]) 
+			{
+				newApple();
+				break;
+			}
+		}
 	}
 	public void move(){
 		for(int i = bodyParts;i>0;i--) {
@@ -100,9 +133,43 @@ public class GamePanel extends JPanel implements ActionListener{
 		
 	}
 	public void checkApple() {
-		if((x[0] == appleX) && (y[0] == appleY)) {
+		if((x[0] == appleX) && (y[0] == appleY)) 
+		{
+			int randomchoice = random.nextInt(4);
+			switch(randomchoice) {
+			case 1:
+				new Trying_Different_Languages("yummy");	break;
+			case 2:
+				new Trying_Different_Languages("great");	break;
+			case 3:
+				new Trying_Different_Languages("최고에요");	break;
+			case 0:
+				new Trying_Different_Languages("good");		break;
+			}
+			
+			// 중간속도
+			if (itemType == 0) 
+			{
+				timer.setDelay(100);
+				applesEaten += 5;  // 5점
+			} 
+			
+			// 빠른속도
+			else if (itemType == 1) 
+			{
+				timer.setDelay(75);
+				applesEaten += 10; //10점
+			}
+			
+			// 느린속도
+			else 
+			{
+				timer.setDelay(175);
+				applesEaten++; // 1점
+			}
+			
 			bodyParts++;
-			applesEaten++;
+			itemType = random.nextInt(3);
 			newApple();
 		}
 	}
@@ -135,6 +202,7 @@ public class GamePanel extends JPanel implements ActionListener{
 		}
 	}
 	public void gameOver(Graphics g) {
+		new Trying_Different_Languages("game over");
 		//Score
 		g.setColor(Color.red);
 		g.setFont( new Font("Ink Free",Font.BOLD, 40));
