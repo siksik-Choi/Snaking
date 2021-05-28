@@ -1,5 +1,3 @@
-package application;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class LevelFrame extends JFrame{
+public class LevelFrame extends JFrame implements ActionListener{
 	
 	JPanel LevelPanel;
 	JComboBox<String> levelbox;
@@ -20,66 +18,65 @@ public class LevelFrame extends JFrame{
 	JButton startButton = new JButton();
 	
 	public LevelFrame(){
+		
 		setSize(Main.SCREEN_HEIGHT,Main.SCREEN_WIDTH);
 	
-		//getContentPane().setBackground(Color.orange); -> ¾Æ¸¶ ÆĞ³Î¿¡ °¡·ÁÁ® ¾È³ª¿È..
+		//getContentPane().setBackground(Color.orange); -> ì•„ë§ˆ íŒ¨ë„ì— ê°€ë ¤ì ¸ ì•ˆë‚˜ì˜´..
 		setResizable(false);
-		setLocationRelativeTo(null); // Àı´ëÀ§Ä¡·Î À§Ä¡Á¶Á¤
+		setLocationRelativeTo(null); // ì ˆëŒ€ìœ„ì¹˜ë¡œ ìœ„ì¹˜ì¡°ì •
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		//LevelPanel ¼³Á¤
+		//LevelPanel ì„¤ì •
 		LevelPanel = new JPanel();
-		LevelPanel.setBackground(Color.orange); // ¹è°æ»ö ¼±ÅÃ
+		LevelPanel.setBackground(Color.orange); // ë°°ê²½ìƒ‰ ì„ íƒ
 		LevelPanel.setLayout(null);
 		
-		//Combobox ¼³Á¤
+		//Combobox ì„¤ì •
 		levelbox = new JComboBox(level_list);
-		level_print = new JLabel("LEVEL : CHOOSE LEVEL");
-		
 		levelbox.setBounds(280,180,100,40); // combobox location
+		levelbox.addActionListener(this);
+		
+		level_print = new JLabel("LEVEL : CHOOSE LEVEL");
 		level_print.setBounds(260,220,200,35); // level_print location
+		
 		
 		LevelPanel.add(levelbox);
 		LevelPanel.add(level_print);
 		
 		
-		// ´ÙÀ½ È­¸é ÁøÇà¹öÆ° »ğÀÔ
+		// ë‹¤ìŒ í™”ë©´ ì§„í–‰ë²„íŠ¼ ì‚½ì…
 		ImageIcon normalIcon = new ImageIcon("src/image/startbutton2.png");
 		ImageIcon rolloverIcon = new ImageIcon("src/image/startbutton.png");
 		ImageIcon pressedIcon = new ImageIcon("src/image/startbutton2.png");
 		
-		startButton.setIcon(normalIcon); // ÀÏ¹İÀûÀÎ »óÅÂ
+		startButton.setIcon(normalIcon); // ì¼ë°˜ì ì¸ ìƒíƒœ
 		startButton.setRolloverIcon(rolloverIcon);
 		startButton.setPressedIcon(pressedIcon);
-		startButton.setBounds(250,260,160,160); // ¹öÆ°ÀÇ À§Ä¡
-		//startButton.addActionListener(this);
+		startButton.setBounds(250,260,160,160); // ë²„íŠ¼ì˜ ìœ„ì¹˜
+		startButton.addActionListener(this);
 		startButton.setBorderPainted(false);
 		startButton.setFocusPainted(false);
 		startButton.setContentAreaFilled(false);
 		LevelPanel.add(startButton);
 		
-		add(LevelPanel);
+		add(LevelPanel);		
 		
-		levelbox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String fruit = levelbox.getSelectedItem().toString();
-				level_print.setText("LEVEL : " + fruit);
-			}
-		});
-		
-		startButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				  if(e.getSource()==startButton) {
-			//		  this.setVisible(false);
-			//	      this.dispose(); //ÇØ´çÇÁ·¹ÀÓ¸¸Á¾·á
-				      new GameFrame(); // GameFrameÀ¸·Î ³Ñ¾î°¨!
-				  }
-			}
-		});
-		
-		
+	
 		setVisible(true);
 	}
 	
-	
+	public void actionPerformed(ActionEvent e) // mainì—ì„œ ActionListenerë¥¼ implementsí•˜ì—¬ í•´ê²°!
+	{
+		//ì•¡ì…˜ ë¦¬ìŠ¤ë„ˆ ì¬ì •ì˜
+		if(e.getSource().equals(startButton)) {
+			  this.setVisible(false);
+		      this.dispose(); //í•´ë‹¹í”„ë ˆì„ë§Œì¢…ë£Œ
+		      new GameFrame(); // GameFrameìœ¼ë¡œ ë„˜ì–´ê°!
+		  }
+		else
+		{
+			String fruit = levelbox.getSelectedItem().toString();
+			level_print.setText("LEVEL : " + fruit);
+		}
+	}
 }
